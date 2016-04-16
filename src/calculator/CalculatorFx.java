@@ -1,6 +1,7 @@
 package calculator;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,13 +13,86 @@ import javafx.stage.Stage;
 
 public class CalculatorFx extends Application {
 	
+	private TextField monitor=new TextField();
 	private int btdott=0;
+	private String num1;
+	private String num2;
+	private String display;
+	private double num;
+	private int number;
+	
+	public void btclicked(ActionEvent e)
+	{
+		String num1=((Button)e.getSource()).getText();
+		String num2=monitor.getText();
+		String display=num2+num1;
+		monitor.setText(display);
+	}
+	
+	public void btOpclicked(ActionEvent e)
+	{
+		String Op=((Button)e.getSource()).getText();
+		switch(Op)
+		{
+			case "⌂":	monitor.clear();
+					 	btdott=0;
+					 	break;
+					 
+			case "X²":	num=Double.parseDouble(monitor.getText());
+					  	num=(double)Math.pow(num, 2);
+					  	display=""+num;
+					  	monitor.setText(display);
+					  	break;
+			
+			case "√":	num=Double.parseDouble(monitor.getText());
+						num=(double)Math.sqrt(num);
+						display=""+num;
+						monitor.setText(display);
+						break;
+						
+			case ".":	if(btdott==0)
+						{
+							num1=((Button)e.getSource()).getText();
+							num2=monitor.getText();
+							display=num2+num1;
+							monitor.setText(display);
+							btdott=1;
+						}
+						break;
+			
+			case "%":	num=Double.parseDouble(monitor.getText());
+						num/=100;
+						display=""+num;
+						monitor.setText(display);
+						break;
+						
+			case "X!":	int f=1;
+						number=Integer.parseInt(monitor.getText());
+						for(int i=number;i>0;i--)
+							f*=i;
+						display=""+f;
+						f=Integer.parseInt(display);
+						monitor.setText(display);
+						break;
+			default:monitor.setText("Invalid Operation");
+		}
+	}
+	
+	public void btRemoveDigit(ActionEvent e)
+	{
+		 String s= monitor.getText();
+		 String removeDigit=s.substring(0,s.length()-1);
+		 monitor.clear();
+		 monitor.setText(removeDigit);
+		 if(s.endsWith("."))
+			 if(!removeDigit.endsWith("."))
+				 btdott=0;
+	}
 	
 	public void start(Stage stage)
 	{
 		GridPane pane=new GridPane();
-		
-		TextField monitor=new TextField();
+
 		monitor.setAlignment(Pos.CENTER_RIGHT);
 		monitor.setMinHeight(30);
 		monitor.setMinWidth(100);
@@ -35,6 +109,60 @@ public class CalculatorFx extends Application {
 		panebt.setHgap(5);
 		panebt.setVgap(5);
 		
+		Button bt1=new Button("1");
+		bt1.setMinHeight(40);
+		bt1.setMinWidth(40);
+		bt1.setMaxHeight(40);
+		bt1.setMaxWidth(40);
+		bt1.setPrefSize(40, 40);
+		panebt.add(bt1, 0, 3);
+		bt1.setOnAction(e->btclicked(e));
+		
+		Button bt2=new Button("2");
+		bt2.setMinHeight(40);
+		bt2.setMinWidth(40);
+		bt2.setMaxHeight(40);
+		bt2.setMaxWidth(40);
+		bt2.setPrefSize(40, 40);
+		panebt.add(bt2, 1, 3);
+		bt2.setOnAction(e->btclicked(e));
+		
+		Button bt3=new Button("3");
+		bt3.setMinHeight(40);
+		bt3.setMinWidth(40);
+		bt3.setMaxHeight(40);
+		bt3.setMaxWidth(40);
+		bt3.setPrefSize(40, 40);
+		panebt.add(bt3, 2, 3);
+		bt3.setOnAction(e->btclicked(e));
+		
+		Button bt4=new Button("4");
+		bt4.setMinHeight(40);
+		bt4.setMinWidth(40);
+		bt4.setMaxHeight(40);
+		bt4.setMaxWidth(40);
+		bt4.setPrefSize(40, 40);
+		panebt.add(bt4, 0, 2);
+		bt4.setOnAction(e->btclicked(e));
+		
+		Button bt5=new Button("5");
+		bt5.setMinHeight(40);
+		bt5.setMinWidth(40);
+		bt5.setMaxHeight(40);
+		bt5.setMaxWidth(40);
+		bt5.setPrefSize(40, 40);
+		panebt.add(bt5, 1, 2);
+		bt5.setOnAction(e->btclicked(e));
+		
+		Button bt6=new Button("6");
+		bt6.setMinHeight(40);
+		bt6.setMinWidth(40);
+		bt6.setMaxHeight(40);
+		bt6.setMaxWidth(40);
+		bt6.setPrefSize(40, 40);
+		panebt.add(bt6, 2, 2);
+		bt6.setOnAction(e->btclicked(e));
+		
 		Button bt7=new Button("7");
 		bt7.setMinHeight(40);
 		bt7.setMinWidth(40);
@@ -42,12 +170,7 @@ public class CalculatorFx extends Application {
 		bt7.setMaxWidth(40);
 		bt7.setPrefSize(40, 40);
 		panebt.add(bt7, 0, 1);
-		bt7.setOnAction(e->{
-			String num1=bt7.getText();
-			String num2=monitor.getText();
-			String display=num2+num1;
-			monitor.setText(display);
-		});
+		bt7.setOnAction(e->btclicked(e));
 		
 		Button bt8=new Button("8");
 		bt8.setMinHeight(40);
@@ -56,12 +179,7 @@ public class CalculatorFx extends Application {
 		bt8.setMaxWidth(40);
 		bt8.setPrefSize(40, 40);
 		panebt.add(bt8, 1, 1);
-		bt8.setOnAction(e->{
-			String num1=bt8.getText();
-			String num2=monitor.getText();
-			String display=num2+num1;
-			monitor.setText(display);
-		});
+		bt8.setOnAction(e->btclicked(e));
 		
 		Button bt9=new Button("9");
 		bt9.setMinHeight(40);
@@ -70,12 +188,40 @@ public class CalculatorFx extends Application {
 		bt9.setMaxWidth(40);
 		bt9.setPrefSize(40, 40);
 		panebt.add(bt9, 2, 1);
-		bt9.setOnAction(e->{
-			String num1=bt9.getText();
-			String num2=monitor.getText();
-			String display=num2+num1;
-			monitor.setText(display);
-		});
+		bt9.setOnAction(e->btclicked(e));
+		
+		Button bt0=new Button("0");
+		bt0.setMinHeight(40);
+		bt0.setMinWidth(40);
+		bt0.setMaxHeight(40);
+		bt0.setMaxWidth(40);
+		bt0.setPrefSize(40, 40);
+		panebt.add(bt0, 0, 4);
+		bt0.setOnAction(e->btclicked(e));
+		
+		
+		
+	
+		
+		Button btce=new Button("←");
+		btce.setMinHeight(40);
+		btce.setMinWidth(40);
+		btce.setMaxHeight(40);
+		btce.setMaxWidth(40);
+		btce.setPrefSize(40, 40);
+		panebt.add(btce, 4, 1);
+		btce.setOnAction(e->btRemoveDigit(e));
+			
+		Button btc=new Button("⌂");
+		btc.setMinHeight(40);
+		btc.setMinWidth(40);
+		btc.setMaxHeight(40);
+		btc.setMaxWidth(40);
+		btc.setPrefSize(40, 40);
+		panebt.add(btc, 5, 1);
+		btc.setOnAction(e->btOpclicked(e));
+		
+		
 		
 		Button btdiv=new Button("/");
 		btdiv.setMinHeight(40);
@@ -85,72 +231,6 @@ public class CalculatorFx extends Application {
 		btdiv.setPrefSize(40, 40);
 		panebt.add(btdiv, 3, 1);
 		
-		Button btce=new Button("←");
-		btce.setMinHeight(40);
-		btce.setMinWidth(40);
-		btce.setMaxHeight(40);
-		btce.setMaxWidth(40);
-		btce.setPrefSize(40, 40);
-		panebt.add(btce, 4, 1);
-		
-		
-		Button btc=new Button("⌂");
-		btc.setMinHeight(40);
-		btc.setMinWidth(40);
-		btc.setMaxHeight(40);
-		btc.setMaxWidth(40);
-		btc.setPrefSize(40, 40);
-		panebt.add(btc, 5, 1);
-		btc.setOnAction(e->{
-			monitor.clear();
-			btdott=0;
-		});
-		
-		Button bt4=new Button("4");
-		bt4.setMinHeight(40);
-		bt4.setMinWidth(40);
-		bt4.setMaxHeight(40);
-		bt4.setMaxWidth(40);
-		bt4.setPrefSize(40, 40);
-		panebt.add(bt4, 0, 2);
-		bt4.setOnAction(e->{
-			String num1=bt4.getText();
-			String num2=monitor.getText();
-			String display=num2+num1;
-			monitor.setText(display);
-		});
-		
-		
-		Button bt5=new Button("5");
-		bt5.setMinHeight(40);
-		bt5.setMinWidth(40);
-		bt5.setMaxHeight(40);
-		bt5.setMaxWidth(40);
-		bt5.setPrefSize(40, 40);
-		panebt.add(bt5, 1, 2);
-		bt5.setOnAction(e->{
-			String num1=bt5.getText();
-			String num2=monitor.getText();
-			String display=num2+num1;
-			monitor.setText(display);
-		});
-		
-		
-		Button bt6=new Button("6");
-		bt6.setMinHeight(40);
-		bt6.setMinWidth(40);
-		bt6.setMaxHeight(40);
-		bt6.setMaxWidth(40);
-		bt6.setPrefSize(40, 40);
-		panebt.add(bt6, 2, 2);
-		bt6.setOnAction(e->{
-			String num1=bt6.getText();
-			String num2=monitor.getText();
-			String display=num2+num1;
-			monitor.setText(display);
-		});
-		
-		
 		Button btmul=new Button("*");
 		btmul.setMinHeight(40);
 		btmul.setMinWidth(40);
@@ -159,67 +239,6 @@ public class CalculatorFx extends Application {
 		btmul.setPrefSize(40, 40);
 		panebt.add(btmul, 3, 2);
 		
-		Button btl=new Button("(");
-		btl.setMinHeight(40);
-		btl.setMinWidth(40);
-		btl.setMaxHeight(40);
-		btl.setMaxWidth(40);
-		btl.setPrefSize(40, 40);
-		panebt.add(btl, 4, 2);
-		
-		Button btr=new Button(")");
-		btr.setMinHeight(40);
-		btr.setMinWidth(40);
-		btr.setMaxHeight(40);
-		btr.setMaxWidth(40);
-		btr.setPrefSize(40, 40);
-		panebt.add(btr, 5, 2);
-		
-		Button bt1=new Button("1");
-		bt1.setMinHeight(40);
-		bt1.setMinWidth(40);
-		bt1.setMaxHeight(40);
-		bt1.setMaxWidth(40);
-		bt1.setPrefSize(40, 40);
-		panebt.add(bt1, 0, 3);
-		bt1.setOnAction(e->{
-			String num1=bt1.getText();
-			String num2=monitor.getText();
-			String display=num2+num1;
-			monitor.setText(display);
-		});
-		
-		
-		Button bt2=new Button("2");
-		bt2.setMinHeight(40);
-		bt2.setMinWidth(40);
-		bt2.setMaxHeight(40);
-		bt2.setMaxWidth(40);
-		bt2.setPrefSize(40, 40);
-		panebt.add(bt2, 1, 3);
-		bt2.setOnAction(e->{
-			String num1=bt2.getText();
-			String num2=monitor.getText();
-			String display=num2+num1;
-			monitor.setText(display);
-		});
-		
-		
-		Button bt3=new Button("3");
-		bt3.setMinHeight(40);
-		bt3.setMinWidth(40);
-		bt3.setMaxHeight(40);
-		bt3.setMaxWidth(40);
-		bt3.setPrefSize(40, 40);
-		panebt.add(bt3, 2, 3);
-		bt3.setOnAction(e->{
-			String num1=bt3.getText();
-			String num2=monitor.getText();
-			String display=num2+num1;
-			monitor.setText(display);
-		});
-		
-		
 		Button btmin=new Button("-");
 		btmin.setMinHeight(40);
 		btmin.setMinWidth(40);
@@ -227,83 +246,6 @@ public class CalculatorFx extends Application {
 		btmin.setMaxWidth(40);
 		btmin.setPrefSize(40, 40);
 		panebt.add(btmin, 3, 3);
-		
-		Button btsquar=new Button("X²");
-		btsquar.setMinHeight(40);
-		btsquar.setMinWidth(40);
-		btsquar.setMaxHeight(40);
-		btsquar.setMaxWidth(40);
-		btsquar.setPrefSize(40, 40);
-		panebt.add(btsquar, 4, 3);
-		btsquar.setOnAction(e->{
-			double num=Double.parseDouble(monitor.getText());
-			num=(double)Math.pow(num, 2);
-			String display=""+num;
-			monitor.setText(display);
-		});
-		
-		Button btsqrt=new Button("√");
-		btsqrt.setMinHeight(40);
-		btsqrt.setMinWidth(40);
-		btsqrt.setMaxHeight(40);
-		btsqrt.setMaxWidth(40);
-		btsqrt.setPrefSize(40, 40);
-		panebt.add(btsqrt, 5, 3);
-		btsqrt.setOnAction(e->{
-			double num=Double.parseDouble(monitor.getText());
-			num=(double)Math.sqrt(num);
-			String display=""+num;
-			monitor.setText(display);
-		});
-		
-		Button bt0=new Button("0");
-		bt0.setMinHeight(40);
-		bt0.setMinWidth(40);
-		bt0.setMaxHeight(40);
-		bt0.setMaxWidth(40);
-		bt0.setPrefSize(40, 40);
-		panebt.add(bt0, 0, 4);
-		bt0.setOnAction(e->{
-			String num1=bt0.getText();
-			String num2=monitor.getText();
-			String display=num2+num1;
-			monitor.setText(display);
-		});
-		
-		
-		Button btdot=new Button(".");
-		btdot.setMinHeight(40);
-		btdot.setMinWidth(40);
-		btdot.setMaxHeight(40);
-		btdot.setMaxWidth(40);
-		btdot.setPrefSize(40, 40);
-		panebt.add(btdot, 1, 4);
-		btdot.setOnAction(e->{
-			if(btdott==0)
-			{
-				String num1=btdot.getText();
-				String num2=monitor.getText();
-				String display=num2+num1;
-				monitor.setText(display);
-				btdott=1;
-			}
-		});
-		
-		
-		
-		Button btmod=new Button("%");
-		btmod.setMinHeight(40);
-		btmod.setMinWidth(40);
-		btmod.setMaxHeight(40);
-		btmod.setMaxWidth(40);
-		btmod.setPrefSize(40, 40);
-		panebt.add(btmod, 2, 4);
-		btmod.setOnAction(e->{
-			double num=Double.parseDouble(monitor.getText());
-			num/=100;
-			String display=""+num;
-			monitor.setText(display);
-		});
 		
 		Button btplus=new Button("+");
 		btplus.setMinHeight(40);
@@ -321,6 +263,62 @@ public class CalculatorFx extends Application {
 		bteq.setPrefSize(40, 40);
 		panebt.add(bteq, 4, 4);
 		
+		
+		
+		Button btl=new Button("(");
+		btl.setMinHeight(40);
+		btl.setMinWidth(40);
+		btl.setMaxHeight(40);
+		btl.setMaxWidth(40);
+		btl.setPrefSize(40, 40);
+		panebt.add(btl, 4, 2);
+		
+		Button btr=new Button(")");
+		btr.setMinHeight(40);
+		btr.setMinWidth(40);
+		btr.setMaxHeight(40);
+		btr.setMaxWidth(40);
+		btr.setPrefSize(40, 40);
+		panebt.add(btr, 5, 2);
+	
+		Button btdot=new Button(".");
+		btdot.setMinHeight(40);
+		btdot.setMinWidth(40);
+		btdot.setMaxHeight(40);
+		btdot.setMaxWidth(40);
+		btdot.setPrefSize(40, 40);
+		panebt.add(btdot, 1, 4);
+		btdot.setOnAction(e->btOpclicked(e));
+		
+		
+		
+		Button btsquar=new Button("X²");
+		btsquar.setMinHeight(40);
+		btsquar.setMinWidth(40);
+		btsquar.setMaxHeight(40);
+		btsquar.setMaxWidth(40);
+		btsquar.setPrefSize(40, 40);
+		panebt.add(btsquar, 4, 3);
+		btsquar.setOnAction(e->btOpclicked(e));
+		
+		Button btsqrt=new Button("√");
+		btsqrt.setMinHeight(40);
+		btsqrt.setMinWidth(40);
+		btsqrt.setMaxHeight(40);
+		btsqrt.setMaxWidth(40);
+		btsqrt.setPrefSize(40, 40);
+		panebt.add(btsqrt, 5, 3);
+		btsqrt.setOnAction(e->btOpclicked(e));
+		
+		Button btmod=new Button("%");
+		btmod.setMinHeight(40);
+		btmod.setMinWidth(40);
+		btmod.setMaxHeight(40);
+		btmod.setMaxWidth(40);
+		btmod.setPrefSize(40, 40);
+		panebt.add(btmod, 2, 4);
+		btmod.setOnAction(e->btOpclicked(e));
+		
 		Button btfact=new Button("X!");
 		btfact.setMinHeight(40);
 		btfact.setMinWidth(40);
@@ -328,15 +326,8 @@ public class CalculatorFx extends Application {
 		btfact.setMaxWidth(40);
 		btfact.setPrefSize(40, 40);
 		panebt.add(btfact, 5, 4);
-		btfact.setOnAction(e->{
-			int f=1;
-			int num=Integer.parseInt(monitor.getText());
-			for(int i=num;i>0;i--)
-				f*=i;
-			String display=""+f;
-			f=Integer.parseInt(display);
-			monitor.setText(display);
-		});
+		btfact.setOnAction(e->btOpclicked(e));
+		
 		
 		
 		VBox Vbox=new VBox(pane,panebt);
