@@ -15,81 +15,228 @@ public class CalculatorFx extends Application {
 	
 	private TextField monitor=new TextField();
 	private int btdott=0;
+	private int bracketsCounter=0;
+	private int number;
+	private double num;
 	private String num1;
 	private String num2;
+	private String Op;
 	private String display;
-	private double num;
-	private int number;
+	private Infix calculation=new Infix();
 	
-	public void btclicked(ActionEvent e)
+	
+	public void btclickedNum(ActionEvent e)
 	{
-		String num1=((Button)e.getSource()).getText();
-		String num2=monitor.getText();
-		String display=num2+num1;
-		monitor.setText(display);
+		display=monitor.getText();
+		if(!display.endsWith(")"))
+		{
+			num1=((Button)e.getSource()).getText();
+			num2=monitor.getText();
+			display="";
+			display=num2+num1;
+			monitor.setText(display);
+		}
 	}
 	
 	public void btOpclicked(ActionEvent e)
 	{
-		String Op=((Button)e.getSource()).getText();
+		String s= monitor.getText();
+		Op=((Button)e.getSource()).getText();
 		switch(Op)
 		{
 			case "⌂":	monitor.clear();
 					 	btdott=0;
 					 	break;
 					 
-			case "X²":	num=Double.parseDouble(monitor.getText());
-					  	num=(double)Math.pow(num, 2);
-					  	display=""+num;
-					  	monitor.setText(display);
+			case "X²":	if(s.length()>0)
+						{
+							num=Double.parseDouble(monitor.getText());
+						  	num=(double)Math.pow(num, 2);
+						  	display=""+num;
+						  	monitor.setText(display);
+						}
 					  	break;
 			
-			case "√":	num=Double.parseDouble(monitor.getText());
-						num=(double)Math.sqrt(num);
-						display=""+num;
-						monitor.setText(display);
+			case "√":	if(s.length()>0)
+						{
+							num=Double.parseDouble(monitor.getText());
+							num=(double)Math.sqrt(num);
+							display=""+num;
+							monitor.setText(display);
+						}
 						break;
 						
-			case ".":	if(btdott==0)
+			case ".":	if(btdott==0&&!s.endsWith(")"))
 						{
 							num1=((Button)e.getSource()).getText();
 							num2=monitor.getText();
+							if(num2.length()==0||num2.endsWith("+")||
+									num2.endsWith("-")||num2.endsWith("*")||
+									num2.endsWith("/")||num2.endsWith("("))
+								num2+="0";
 							display=num2+num1;
 							monitor.setText(display);
 							btdott=1;
 						}
 						break;
 			
-			case "%":	num=Double.parseDouble(monitor.getText());
-						num/=100;
-						display=""+num;
-						monitor.setText(display);
+			case "%":	if(s.length()>0)
+						{
+							num=Double.parseDouble(monitor.getText());
+							num/=100;
+							display=""+num;
+							monitor.setText(display);
+						}
 						break;
 						
-			case "X!":	int f=1;
-						number=Integer.parseInt(monitor.getText());
-						for(int i=number;i>0;i--)
-							f*=i;
-						display=""+f;
-						f=Integer.parseInt(display);
-						monitor.setText(display);
+			case "X!":	if(s.length()>0)
+						{
+							int f=1;
+							number=Integer.parseInt(monitor.getText());
+							for(int i=number;i>0;i--)
+								f*=i;
+							display=""+f;
+							f=Integer.parseInt(display);
+							monitor.setText(display);
+						}
 						break;
-			default:monitor.setText("Invalid Operation");
+			
+			case "←":	if(s.length()>0)
+						{
+						String removeDigit=s.substring(0,s.length()-1);
+						monitor.clear();
+						monitor.setText(removeDigit);
+						if(s.endsWith("."))
+							if(!removeDigit.endsWith("."))
+								btdott=0;
+						if(s.endsWith(")"))
+							if(!removeDigit.endsWith(")"))
+								bracketsCounter++;
+						if(s.endsWith("("))
+							if(!removeDigit.endsWith("("))
+								bracketsCounter--;
+						}
+						break;
+			
+			case "+":	display=monitor.getText();
+						if(!display.endsWith("+")&&!display.endsWith("-")
+								&&!display.endsWith("*")&&!display.endsWith("/")
+								&&!display.endsWith(".")&&display.length()>0)
+						{
+							display+=Op;
+							monitor.setText(display);
+						}
+						else if(display.length()==0)
+						{
+							monitor.setText("0");
+							display=monitor.getText();
+							display+=Op;
+							monitor.setText(display);
+						}
+						btdott=0;
+						break;
+			
+			case "-":	display=monitor.getText();
+						if(!display.endsWith("+")&&!display.endsWith("-")
+								&&!display.endsWith("*")&&!display.endsWith("/")
+								&&!display.endsWith(".")&&display.length()>0)
+						{
+							display+=Op;
+							monitor.setText(display);
+						}
+						else if(display.length()==0)
+						{
+							monitor.setText("0");
+							display=monitor.getText();
+							display+=Op;
+							monitor.setText(display);
+						}
+						btdott=0;
+						break;
+			
+			case "*":	display=monitor.getText();
+						if(!display.endsWith("+")&&!display.endsWith("-")
+								&&!display.endsWith("*")&&!display.endsWith("/")
+								&&!display.endsWith(".")&&display.length()>0)
+						{
+							display+=Op;
+							monitor.setText(display);
+						}
+						else if(display.length()==0)
+						{
+							monitor.setText("0");
+							display=monitor.getText();
+							display+=Op;
+							monitor.setText(display);
+						}
+						btdott=0;
+						break;
+			
+			case "/":	display=monitor.getText();
+						if(!display.endsWith("+")&&!display.endsWith("-")
+								&&!display.endsWith("*")&&!display.endsWith("/")
+								&&!display.endsWith(".")&&display.length()>0)
+						{
+							display+=Op;
+							monitor.setText(display);
+						}
+						else if(display.length()==0)
+						{
+							monitor.setText("0");
+							display=monitor.getText();
+							display+=Op;
+							monitor.setText(display);
+						}
+						btdott=0;
+						break;
+						
+			case "=":	display= monitor.getText();
+						if(display.length()>0)
+						{
+							double result=calculation.infix(display);
+							display=""+result;
+							monitor.clear();
+							monitor.setText(display);
+						}
+						btdott=1;
+						break;
+						
+			case "(":	if(s.endsWith("+")||s.endsWith("-")||s.endsWith("*")||
+							s.endsWith("/")||s.endsWith("(")||s.length()==0)
+						{
+							num1=((Button)e.getSource()).getText();
+							num2=monitor.getText();
+							display=num2+num1;
+							monitor.setText(display);
+							bracketsCounter++;
+						}
+						break;
+			
+			case ")":	if(bracketsCounter>0)
+						{
+							num1=((Button)e.getSource()).getText();
+							num2=monitor.getText();
+							display=num2+num1;
+							monitor.setText(display);
+							bracketsCounter--;
+						}
+						break;
+			
+			default:	monitor.setText("Invalid Operation");
+						break;
 		}
 	}
 	
-	public void btRemoveDigit(ActionEvent e)
+	public void btInfo(Button bt)
 	{
-		 String s= monitor.getText();
-		 String removeDigit=s.substring(0,s.length()-1);
-		 monitor.clear();
-		 monitor.setText(removeDigit);
-		 if(s.endsWith("."))
-			 if(!removeDigit.endsWith("."))
-				 btdott=0;
+		bt.setMinHeight(40);
+		bt.setMinWidth(40);
+		bt.setMaxHeight(40);
+		bt.setMaxWidth(40);
+		bt.setPrefSize(40, 40);
 	}
 	
-	public void start(Stage stage)
+ 	public void start(Stage stage)
 	{
 		GridPane pane=new GridPane();
 
@@ -110,221 +257,130 @@ public class CalculatorFx extends Application {
 		panebt.setVgap(5);
 		
 		Button bt1=new Button("1");
-		bt1.setMinHeight(40);
-		bt1.setMinWidth(40);
-		bt1.setMaxHeight(40);
-		bt1.setMaxWidth(40);
-		bt1.setPrefSize(40, 40);
+		btInfo(bt1);
 		panebt.add(bt1, 0, 3);
-		bt1.setOnAction(e->btclicked(e));
+		bt1.setOnAction(e->btclickedNum(e));
 		
 		Button bt2=new Button("2");
-		bt2.setMinHeight(40);
-		bt2.setMinWidth(40);
-		bt2.setMaxHeight(40);
-		bt2.setMaxWidth(40);
-		bt2.setPrefSize(40, 40);
+		btInfo(bt2);
 		panebt.add(bt2, 1, 3);
-		bt2.setOnAction(e->btclicked(e));
+		bt2.setOnAction(e->btclickedNum(e));
 		
 		Button bt3=new Button("3");
-		bt3.setMinHeight(40);
-		bt3.setMinWidth(40);
-		bt3.setMaxHeight(40);
-		bt3.setMaxWidth(40);
-		bt3.setPrefSize(40, 40);
+		btInfo(bt3);
 		panebt.add(bt3, 2, 3);
-		bt3.setOnAction(e->btclicked(e));
+		bt3.setOnAction(e->btclickedNum(e));
 		
 		Button bt4=new Button("4");
-		bt4.setMinHeight(40);
-		bt4.setMinWidth(40);
-		bt4.setMaxHeight(40);
-		bt4.setMaxWidth(40);
-		bt4.setPrefSize(40, 40);
+		btInfo(bt4);
 		panebt.add(bt4, 0, 2);
-		bt4.setOnAction(e->btclicked(e));
+		bt4.setOnAction(e->btclickedNum(e));
 		
 		Button bt5=new Button("5");
-		bt5.setMinHeight(40);
-		bt5.setMinWidth(40);
-		bt5.setMaxHeight(40);
-		bt5.setMaxWidth(40);
-		bt5.setPrefSize(40, 40);
+		btInfo(bt5);
 		panebt.add(bt5, 1, 2);
-		bt5.setOnAction(e->btclicked(e));
+		bt5.setOnAction(e->btclickedNum(e));
 		
 		Button bt6=new Button("6");
-		bt6.setMinHeight(40);
-		bt6.setMinWidth(40);
-		bt6.setMaxHeight(40);
-		bt6.setMaxWidth(40);
-		bt6.setPrefSize(40, 40);
+		btInfo(bt6);
 		panebt.add(bt6, 2, 2);
-		bt6.setOnAction(e->btclicked(e));
+		bt6.setOnAction(e->btclickedNum(e));
 		
 		Button bt7=new Button("7");
-		bt7.setMinHeight(40);
-		bt7.setMinWidth(40);
-		bt7.setMaxHeight(40);
-		bt7.setMaxWidth(40);
-		bt7.setPrefSize(40, 40);
+		btInfo(bt7);
 		panebt.add(bt7, 0, 1);
-		bt7.setOnAction(e->btclicked(e));
+		bt7.setOnAction(e->btclickedNum(e));
 		
 		Button bt8=new Button("8");
-		bt8.setMinHeight(40);
-		bt8.setMinWidth(40);
-		bt8.setMaxHeight(40);
-		bt8.setMaxWidth(40);
-		bt8.setPrefSize(40, 40);
+		btInfo(bt8);
 		panebt.add(bt8, 1, 1);
-		bt8.setOnAction(e->btclicked(e));
+		bt8.setOnAction(e->btclickedNum(e));
 		
 		Button bt9=new Button("9");
-		bt9.setMinHeight(40);
-		bt9.setMinWidth(40);
-		bt9.setMaxHeight(40);
-		bt9.setMaxWidth(40);
-		bt9.setPrefSize(40, 40);
+		btInfo(bt9);
 		panebt.add(bt9, 2, 1);
-		bt9.setOnAction(e->btclicked(e));
+		bt9.setOnAction(e->btclickedNum(e));
 		
 		Button bt0=new Button("0");
-		bt0.setMinHeight(40);
-		bt0.setMinWidth(40);
-		bt0.setMaxHeight(40);
-		bt0.setMaxWidth(40);
-		bt0.setPrefSize(40, 40);
+		btInfo(bt0);
 		panebt.add(bt0, 0, 4);
-		bt0.setOnAction(e->btclicked(e));
+		bt0.setOnAction(e->btclickedNum(e));
 		
 		
-		
-	
 		
 		Button btce=new Button("←");
-		btce.setMinHeight(40);
-		btce.setMinWidth(40);
-		btce.setMaxHeight(40);
-		btce.setMaxWidth(40);
-		btce.setPrefSize(40, 40);
+		btInfo(btce);
 		panebt.add(btce, 4, 1);
-		btce.setOnAction(e->btRemoveDigit(e));
+		btce.setOnAction(e->btOpclicked(e));
 			
 		Button btc=new Button("⌂");
-		btc.setMinHeight(40);
-		btc.setMinWidth(40);
-		btc.setMaxHeight(40);
-		btc.setMaxWidth(40);
-		btc.setPrefSize(40, 40);
+		btInfo(btc);
 		panebt.add(btc, 5, 1);
 		btc.setOnAction(e->btOpclicked(e));
 		
 		
 		
 		Button btdiv=new Button("/");
-		btdiv.setMinHeight(40);
-		btdiv.setMinWidth(40);
-		btdiv.setMaxHeight(40);
-		btdiv.setMaxWidth(40);
-		btdiv.setPrefSize(40, 40);
+		btInfo(btdiv);
 		panebt.add(btdiv, 3, 1);
+		btdiv.setOnAction(e->btOpclicked(e));
 		
 		Button btmul=new Button("*");
-		btmul.setMinHeight(40);
-		btmul.setMinWidth(40);
-		btmul.setMaxHeight(40);
-		btmul.setMaxWidth(40);
-		btmul.setPrefSize(40, 40);
+		btInfo(btmul);
 		panebt.add(btmul, 3, 2);
+		btmul.setOnAction(e->btOpclicked(e));
 		
 		Button btmin=new Button("-");
-		btmin.setMinHeight(40);
-		btmin.setMinWidth(40);
-		btmin.setMaxHeight(40);
-		btmin.setMaxWidth(40);
-		btmin.setPrefSize(40, 40);
+		btInfo(btmin);
 		panebt.add(btmin, 3, 3);
+		btmin.setOnAction(e->btOpclicked(e));
 		
 		Button btplus=new Button("+");
-		btplus.setMinHeight(40);
-		btplus.setMinWidth(40);
-		btplus.setMaxHeight(40);
-		btplus.setMaxWidth(40);
-		btplus.setPrefSize(40, 40);
+		btInfo(btplus);
 		panebt.add(btplus, 3, 4);
+		btplus.setOnAction(e->btOpclicked(e));
 		
 		Button bteq=new Button("=");
-		bteq.setMinHeight(40);
-		bteq.setMinWidth(40);
-		bteq.setMaxHeight(40);
-		bteq.setMaxWidth(40);
-		bteq.setPrefSize(40, 40);
+		btInfo(bteq);
 		panebt.add(bteq, 4, 4);
+		bteq.setOnAction(e->btOpclicked(e));
 		
 		
 		
 		Button btl=new Button("(");
-		btl.setMinHeight(40);
-		btl.setMinWidth(40);
-		btl.setMaxHeight(40);
-		btl.setMaxWidth(40);
-		btl.setPrefSize(40, 40);
+		btInfo(btl);
 		panebt.add(btl, 4, 2);
+		btl.setOnAction(e->btOpclicked(e));
 		
 		Button btr=new Button(")");
-		btr.setMinHeight(40);
-		btr.setMinWidth(40);
-		btr.setMaxHeight(40);
-		btr.setMaxWidth(40);
-		btr.setPrefSize(40, 40);
+		btInfo(btr);
 		panebt.add(btr, 5, 2);
+		btr.setOnAction(e->btOpclicked(e));
 	
 		Button btdot=new Button(".");
-		btdot.setMinHeight(40);
-		btdot.setMinWidth(40);
-		btdot.setMaxHeight(40);
-		btdot.setMaxWidth(40);
-		btdot.setPrefSize(40, 40);
+		btInfo(btdot);
 		panebt.add(btdot, 1, 4);
 		btdot.setOnAction(e->btOpclicked(e));
 		
 		
 		
 		Button btsquar=new Button("X²");
-		btsquar.setMinHeight(40);
-		btsquar.setMinWidth(40);
-		btsquar.setMaxHeight(40);
-		btsquar.setMaxWidth(40);
-		btsquar.setPrefSize(40, 40);
+		btInfo(btsquar);
 		panebt.add(btsquar, 4, 3);
 		btsquar.setOnAction(e->btOpclicked(e));
 		
 		Button btsqrt=new Button("√");
-		btsqrt.setMinHeight(40);
-		btsqrt.setMinWidth(40);
-		btsqrt.setMaxHeight(40);
-		btsqrt.setMaxWidth(40);
-		btsqrt.setPrefSize(40, 40);
+		btInfo(btsqrt);
 		panebt.add(btsqrt, 5, 3);
 		btsqrt.setOnAction(e->btOpclicked(e));
 		
 		Button btmod=new Button("%");
-		btmod.setMinHeight(40);
-		btmod.setMinWidth(40);
-		btmod.setMaxHeight(40);
-		btmod.setMaxWidth(40);
-		btmod.setPrefSize(40, 40);
+		btInfo(btmod);
 		panebt.add(btmod, 2, 4);
 		btmod.setOnAction(e->btOpclicked(e));
 		
 		Button btfact=new Button("X!");
-		btfact.setMinHeight(40);
-		btfact.setMinWidth(40);
-		btfact.setMaxHeight(40);
-		btfact.setMaxWidth(40);
-		btfact.setPrefSize(40, 40);
+		btInfo(btfact);
 		panebt.add(btfact, 5, 4);
 		btfact.setOnAction(e->btOpclicked(e));
 		
