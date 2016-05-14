@@ -244,8 +244,8 @@ public class CalculatorFx extends Application {
 	 */
 	public double fact(double num)
 	{
-		if(!checkNum(num))
-			return num;
+		/*if(!checkNum(num))
+			return num;*/
 		double f=1;
 		for(double i=num;i>0;i--)
 			f*=i;
